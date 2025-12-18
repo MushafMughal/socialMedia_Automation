@@ -9,6 +9,25 @@ import re
 
 load_dotenv(override=True)
 
+def format_linkedin_text(text):
+    """
+    Converts Markdown bold (**text**) to Unicode bold characters for LinkedIn.
+    """
+    def to_bold(match):
+        content = match.group(1)
+        bold_text = ""
+        for char in content:
+            if 'a' <= char <= 'z':
+                bold_text += chr(ord(char) + 0x1D41A - ord('a'))
+            elif 'A' <= char <= 'Z':
+                bold_text += chr(ord(char) + 0x1D400 - ord('A'))
+            elif '0' <= char <= '9':
+                bold_text += chr(ord(char) + 0x1D7CE - ord('0'))
+            else:
+                bold_text += char
+        return bold_text
+
+    return re.sub(r'\*\*(.*?)\*\*', to_bold, text)
 
 def generateImage(prompt):
     print("Generating image...")
@@ -99,7 +118,9 @@ if __name__ == "__main__":
         parts = full_response.split("IMAGE_PROMPT:")
         content = parts[0].strip()
         image_prompt = parts[1].strip()
-
+    
+    # Apply LinkedIn formatting (convert **bold** to Unicode bold)
+    content = format_linkedin_text(content)
         
     print(f"\nGenerated Content:\n{content}\n")
     print(f"\nGenerated Image Prompt:\n{image_prompt}\n")
