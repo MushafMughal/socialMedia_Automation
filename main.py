@@ -62,6 +62,28 @@ def generateContent(topic):
 
     # return response.output_text
 
+def sendPost_linkedin(text, image_path):
+    print("Sending post to LinkedIn...")
+    url = "https://api25.unipile.com:15543/api/v1/posts"
+    
+    files = []
+    if image_path and os.path.exists(image_path):
+        files = [
+            ("attachments", (os.path.basename(image_path), open(image_path, "rb"), "image/png"))
+        ]
+
+    payload = {
+        "account_id": "FhOWYYCNSoST4cYtMsXDEw",
+        "text": text
+    }
+    headers = {
+        "accept": "application/json",
+        "X-API-KEY": "y4NaOruH./A1O3D/+QnpmeTyHzQWR8esTOEf9Ata4P4K3LiXlTJM="
+    }
+
+    response = requests.post(url, data=payload, files=files, headers=headers)
+    return response.text
+
 
 if __name__ == "__main__":
     # topic = input("Enter the topic: ")
@@ -83,4 +105,7 @@ if __name__ == "__main__":
     print(f"\nGenerated Image Prompt:\n{image_prompt}\n")
     
     image_file = generateImage(image_prompt)
-    print(f"Image saved to {image_file}")
+    
+    if content:
+        response = sendPost_linkedin(content, image_file)
+        print(f"\nPost Response: {response}")
