@@ -10,8 +10,34 @@ import re
 load_dotenv(override=True)
 
 
+def generateImage(prompt):
+    print("Generating image...")
+
+    client = genai.Client()
+
+    response = client.models.generate_content(
+        model="gemini-3-pro-image-preview",
+        contents=[prompt],
+    )
+
+    # image_parts = [part for part in response.parts if part.inline_data]
+    # if image_parts:
+    #     image = image_parts[0].as_image()
+    #     image.save('weather_tokyo.png')
+    #     image.show()
+
+    for part in response.parts:
+        if part.text is not None:
+            print(part.text)
+
+        if part.inline_data is not None:
+            image = part.as_image()
+            image.save("generated_image.png")
+            return "generated_image.png"
+
 def generateContent(topic):
     print("Generating content...")
+
 
     client = genai.Client()
 
@@ -51,7 +77,10 @@ if __name__ == "__main__":
         parts = full_response.split("IMAGE_PROMPT:")
         content = parts[0].strip()
         image_prompt = parts[1].strip()
-    
 
+        
     print(f"\nGenerated Content:\n{content}\n")
     print(f"\nGenerated Image Prompt:\n{image_prompt}\n")
+    
+    image_file = generateImage(image_prompt)
+    print(f"Image saved to {image_file}")
