@@ -35,7 +35,8 @@ def generateImage(prompt):
     client = genai.Client()
 
     response = client.models.generate_content(
-        model="gemini-3-pro-image-preview",
+        model="gemini-2.5-flash-image",
+        # model="gemini-3-pro-image-preview",
         contents=[prompt],
     )
 
@@ -61,7 +62,7 @@ def generateContent(topic):
     client = genai.Client()
 
     response = client.models.generate_content(
-        model="gemini-3-flash-preview",
+        model="gemini-3-pro-preview",
         contents=f"Topic: {topic}",
         config=types.GenerateContentConfig(
             system_instruction="You are a Expert Social Media content creator. Write a compelling LinkedIn post based on the given topic. The post should be engaging, professional, and encourage interaction from the audience.\n\nAt the end of your response, provide a detailed image generation prompt that describes a visual to accompany this post. The image prompt should be relevant to the content you wrote. Start the image prompt with the exact text 'IMAGE_PROMPT:' on a new line.",
